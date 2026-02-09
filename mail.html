@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Une invitation spéciale pour toi 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .email-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .email-header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .email-body {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .message p {
+            margin-bottom: 15px;
+        }
+
+        .hearts-divider {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+        }
+
+        .email-footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .emoji-heart {
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.2);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+
+        .date-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin: 20px 0;
+            font-weight: 600;
+            color: #d63031;
+        }
+
+        @media (max-width: 600px) {
+            .email-header h1 {
+                font-size: 26px;
+            }
+
+            .email-body {
+                padding: 30px 20px;
+            }
+
+            .greeting {
+                font-size: 18px;
+            }
+
+            .message {
+                font-size: 15px;
+            }
+
+            .cta-button {
+                font-size: 16px;
+                padding: 16px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- En-tête -->
+        <div class="email-header">
+            <h1>💌 Une invitation spéciale 💌</h1>
+            <p class="subtitle">Quelque chose de magique t'attend...</p>
+        </div>
+
+        <!-- Corps du message -->
+        <div class="email-body">
+            <div class="greeting">
+                Bonjour ma Princesse, <span class="emoji-heart">👸</span>
+            </div>
+
+            <div class="message">
+                <p>
+                    Je t'ai préparé quelque chose de vraiment spécial... 
+                    <span class="emoji-heart">💕</span>
+                </p>
+                
+                <p>
+                   Je t'invite à découvrir une surprise que j'ai créée rien que pour toi. 
+                   Une surprise qui, je l'espère, te fera sourire et te montrera à quel point tu comptes pour moi.
+                </p>
+
+                <div class="date-badge">
+                    ✨ Spécial Saint-Valentin 2026 ✨
+                </div>
+
+                <p>
+                    Mais ce n'est pas tout... À la fin, une question très importante t'attend. 
+                    Une question à laquelle j'espère de tout mon cœur que tu répondras "OUI" !
+                </p>
+            </div>
+
+            <div class="hearts-divider">
+                💖 💝 💗 💓 💕
+            </div>
+
+            <!-- Bouton d'action -->
+            <a href="https://willyoubemyvalentinemylove.vercel.app/" class="cta-button">
+                Découvrir la surprise 💝
+            </a>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="email-footer">
+            <p>Fait avec tout mon amour pour toi ❤️</p>
+            <p style="margin-top: 10px; font-size: 12px; opacity: 0.7;">
+                Stéphane • Saint-Valentin 2026
+            </p>
+        </div>
+    </div>
+</body>
+</html>
