@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veux-tu être ma Valentine ? 💕</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@11/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .script-font {
+            font-family: 'Great Vibes', cursive;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+        
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ff6b9d, #c06c84, #f67280, #355c7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+            padding: 0.2em 0;
+        }
+        
+        .timeline-image {
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+        }
+        
+        .timeline-image:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.2));
+        }
+        
+        /* Lightbox pour afficher l'image en grand */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        /* Personnages 3D sur l'écran de bienvenue */
+        .character-3dsteph {
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: auto;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .character-3dcam {
+            position: absolute;
+            top: 0;
+            width: 100px;
+            height: auto;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .character-left {
+            left: 0;
+        }
+        
+        .character-right {
+            right: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .character-3d {
+                width: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .character-3d {
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-red-50 to-purple-50 min-h-screen">
+    
+    <!-- Conteneur principal -->
+    <div id="app" class="relative">
+        
+        <!-- Lightbox pour afficher l'image en grand -->
+        <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+            <span class="lightbox-close">×</span>
+            <img id="lightbox-img" src="" alt="Menu en grand">
+        </div>
+        
+        <!-- Écran de bienvenue -->
+        <div id="welcome-screen" class="min-h-screen flex items-center justify-center px-4 relative">
+            <!-- Personnages 3D -->
+            <img src="Steph.png" alt="" class="character-3dsteph character-left">
+            <img src="cam.png" alt="" class="character-3dcam character-right">
+            
+            <div class="text-center fade-in">
+                <h1 class="text-6xl md:text-8xl script-font gradient-text mb-8 floating">
+                    Notre Histoire
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-700 mb-12 max-w-2xl mx-auto">
+                    Il y a des histoires qui méritent d'être racontées...<br>
+                    La nôtre en fait partie. 💕
+                </p>
+                <button onclick="startJourney()" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-12 py-4 rounded-full text-xl font-semibold hover:shadow-2xl transform hover:scale-105 transition duration-300 heartbeat">
+                    Commencer l'aventure ✨
+                </button>
+            </div>
+            <button onclick="restartJourney()" class="absolute bottom-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300">
+                Recommencer depuis le début
+            </button>
+        </div>
+        
+        <!-- Timeline des étapes -->
+        <div id="timeline-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
+            <button onclick="restartJourney()" class="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300">
+                Recommencer
+            </button>
+            <div class="max-w-4xl w-full">
+                <!-- Navigation en haut -->
+                <div class="flex justify-between items-center mb-8">
+                    <button id="prev-btn" onclick="previousStep()" class="bg-white text-gray-700 px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                        ← Précédent
+                    </button>
+                    <span id="step-counter" class="text-lg font-semibold text-gray-600"></span>
+                    <button id="next-btn" onclick="nextStep()" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        Suivant →
+                    </button>
+                </div>
+                
+                <!-- Contenu de l'étape -->
+                <div id="step-content" class="bg-white rounded-3xl shadow-2xl p-8 md:p-12 fade-in">
+                    <!-- Le contenu sera injecté dynamiquement -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quiz -->
+        <div id="quiz-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
+            <button onclick="restartJourney()" class="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300">
+                Recommencer
+            </button>
+            <div class="max-w-3xl w-full">
+                <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                    <h2 class="text-4xl md:text-5xl script-font gradient-text text-center mb-8">
+                        Petit Quiz sur Notre Amour ❤️
+                    </h2>
+                    <div id="quiz-content">
+                        <!-- Le quiz sera injecté ici -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timer -->
+        <div id="timer-screen" class="hidden min-h-screen flex items-center justify-center px-4">
+            <button onclick="restartJourney()" class="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300">
+                Recommencer
+            </button>
+            <div class="text-center">
+                <p class="text-2xl md:text-3xl text-gray-700 mb-8">
+                    Prépare-toi pour la question la plus importante...
+                </p>
+                <div id="countdown" class="text-9xl md:text-[200px] font-bold gradient-text heartbeat">
+                    5
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question finale -->
+        <div id="final-question" class="hidden min-h-screen flex items-center justify-center px-4">
+            <button onclick="restartJourney()" class="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300">
+                Recommencer
+            </button>
+            <div class="text-center relative max-w-3xl mx-auto">
+                <h2 class="text-5xl md:text-7xl script-font gradient-text mb-12 px-4">
+                    Pour notre 4ᵉ année ensemble...<br>
+                    Veux-tu être ma Valentine ? ❤️
+                </h2>
+                
+                <div class="flex flex-col items-center gap-6 relative" style="min-height: 300px;">
+                    <button id="yes-btn" onclick="handleYes()" class="bg-green-500 hover:bg-green-600 text-white text-2xl md:text-3xl font-bold px-16 py-6 rounded-full shadow-2xl transform hover:scale-105 transition duration-300 z-10">
+                        OUI ! 💕
+                    </button>
+                    
+                    <button id="no-btn" class="absolute bg-red-500 text-white text-2xl md:text-3xl font-bold px-16 py-6 rounded-full shadow-2xl transition-all duration-200" style="top: 120px;">
+                        Non
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Écran final avec menu -->
+        <div id="final-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
+            <button onclick="restartJourney()" class="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 transition duration-300 z-50">
+                Recommencer
+            </button>
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="text-center fade-in mb-8">
+                    <h2 class="text-4xl sm:text-5xl md:text-7xl script-font gradient-text mb-6 px-4">
+                        Je t'aime, ma Valentine ! 💕
+                    </h2>
+                    <p id="final-message" class="text-lg sm:text-xl md:text-2xl text-gray-700 mb-8 px-4">
+                        
+                    </p>
+                </div>
+                <div id="menu-container" class="w-full px-4">
+                    <!-- Le menu sera affiché ici si la date/heure est correcte -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Données de la timeline
+        const timelineSteps = [
+            {
+                title: "Tout a commencé par un swipe fruité...",
+                description: "Sur Fruitz, parmi des milliers de profils, nos destins se sont croisés. Un simple geste qui allait changer nos vies pour toujours.",
+                image: "image1.png",
+                emoji: "🍇"
+            },
+            {
+                title: "Le monde s'est arrêté dans ce Berlingo",
+                description: "Notre première rencontre. Dans l'habitacle de ce Berlingo, le temps s'est suspendu. Nous avons refait le monde, partagé nos rêves, sans voir les heures défiler. C'était déjà magique.",
+                image: "image2.png",
+                emoji: "🚗"
+            },
+            {
+                title: "Notre premier 'vrai' rendez-vous",
+                description: "Le Comptoir Italien. Nos regards se croisaient au-dessus des pizzas, et chaque instant était rempli de promesses. Le monde autour n'existait plus, il n'y avait que toi et moi.",
+                image: "image3.png",
+                emoji: "🍝"
+            },
+            {
+                title: "720km pour te rejoindre",
+                description: "L'évidence. Après seulement une semaine, 720 kilomètres n'étaient rien pour te rejoindre en Ardèche. Mon cœur savait déjà que tu étais celle qu'il cherchait.",
+                image: "image4.png",
+                emoji: "🛣️"
+            },
+            {
+                title: "Deux vies, un seul toit",
+                description: "Un an plus tard, nous franchissions une nouvelle étape. Deux vies qui n'en formaient plus qu'une sous le même toit. Le début de notre quotidien à deux, de nos rituels, de notre chez-nous.",
+                image: "image5.png",
+                emoji: "🏠"
+            },
+            {
+                title: "L'eau turquoise d'Annecy",
+                description: "Été 2024. Nos premières vacances juste toi et moi. Le lac d'Annecy, son eau turquoise, et nous deux dans notre bulle d'amour. Des souvenirs gravés dans nos cœurs.",
+                image: "image6.png",
+                emoji: "🏔️"
+            },
+            {
+                title: "La douceur de Malbuisson",
+                description: "Été 2025. Malbuisson et ses paysages enchanteurs. De nouveaux souvenirs précieux, de nouveaux moments à chérir. Notre amour grandissant à chaque aventure partagée.",
+                image: "image7.png",
+                emoji: "🌅"
+            },
+            {
+                title: "4 ans et demi de rêve éveillé",
+                description: "Aujourd'hui, cela fait 4 ans et demi que nous vivons un rêve éveillé à deux. Chaque jour à tes côtés est un cadeau. Et l'histoire ne fait que commencer... Le meilleur reste à venir. 💕",
+                image: "image8.png",
+                emoji: "💑"
+            }
+        ];
+        
+        let currentStep = 0;
+        
+        // Fonctions de sauvegarde
+        function saveProgress(screen, data = {}) {
+            const progress = {
+                screen: screen,
+                currentStep: currentStep,
+                currentQuizQuestion: currentQuizQuestion,
+                ...data
+            };
+            localStorage.setItem('valentineProgress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('valentineProgress');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return null;
+        }
+        
+        function clearProgress() {
+            localStorage.removeItem('valentineProgress');
+        }
+        
+        function restartJourney() {
+            clearProgress();
+            location.reload();
+        }
+        
+        // Quiz
+        const quizQuestions = [
+            {
+                question: "À partir de maintenant, ça fait combien de temps que nous sommes ensemble ?",
+                getAnswers: () => {
+                    const real = calculateTimeTogether();
+                    return [
+                        { text: `${addMonths(real, 2)}`, correct: false },
+                        { text: `${addMonths(real, -2)}`, correct: false },
+                        { text: real, correct: true },
+                        { text: `${addDays(real, 10)}`, correct: false }
+                    ];
+                },
+                correctMessage: () => `Et oui, nous sommes ensemble depuis ${calculateTimeTogether()} ! ❤️`
+            },
+            {
+                question: "Qui est le plus drôle ?",
+                answers: [
+                    { text: "Stéphane", correct: true, message: "Et mes surnoms, ils sont passés où ? 😢" },
+                    { text: "Doudou", correct: true, message: "Je suis donc un Doudou tout doux et tout mou drôle ? 😊" },
+                    { text: "Petit poux", correct: true, message: "C'est vraiment le pire surnom que tu aies pu me trouver... 😢" },
+                    { text: "Ton futur époux", correct: true, message: "Je suis heureux de savoir que tu nous vois aussi loin, toi et moi 😘" }
+                ]
+            },
+            {
+                question: "Si nous étions un duo célèbre, qui serions-nous ?",
+                answers: [
+                    { text: "Bonnie & Clyde", correct: false },
+                    { text: "Homer & Marge", correct: false },
+                    { text: "La Belle et la Bête (je te laisse deviner qui est qui...)", correct: false },
+                    { text: "Juste Stéphane & Camille", correct: true }
+                ],
+                correctMessage: "Pas besoin d'Hollywood, notre histoire est déjà mon scénario préféré. 🎬"
+            },
+            {
+                question: "Lors de notre premier rendez-vous au Comptoir Italien, te souviens-tu de ce que j'ai le plus regardé ?",
+                answers: [
+                    { text: "Ma pizza", correct: false },
+                    { text: "La serveuse (Attention piège !)", correct: false },
+                    { text: "Tes yeux", correct: true },
+                    { text: "L'addition", correct: false }
+                ],
+                correctMessage: "Impossible de regarder autre chose. Même la meilleure des pizzas n'avait aucune saveur à côté de ton regard. 😍"
+            },
+            {
+                question: "Quelle est la prochaine étape logique ?",
+                answers: [
+                    { text: "Adopter un lama", correct: false },
+                    { text: "Gagner au loto", correct: false },
+                    { text: "Que tu dises OUI à la question qui va suivre...", correct: true },
+                    { text: "Refaire 720km", correct: false }
+                ],
+                correctMessage: "Attention, concentre-toi bien, c'est le moment crucial... 💍"
+            }
+        ];
+        
+        let currentQuizQuestion = 0;
+        
+        // Calculer le temps ensemble depuis le 28 juillet 2021
+        function calculateTimeTogether() {
+            const startDate = new Date(2021, 6, 28, 0, 0, 0); // 28 juillet 2021
+            const now = new Date();
+            
+            const diff = now - startDate;
+            
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+            const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            return `${years} ans, ${months} mois, ${days} jours, ${hours} heures, ${minutes} minutes et ${seconds} secondes`;
+        }
+        
+        function addMonths(timeString, monthsToAdd) {
+            const parts = timeString.match(/(\d+) ans, (\d+) mois/);
+            let years = parseInt(parts[1]);
+            let months = parseInt(parts[2]) + monthsToAdd;
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            } else if (months >= 12) {
+                years++;
+                months -= 12;
+            }
+            
+            return timeString.replace(/(\d+) ans, (\d+) mois/, `${years} ans, ${months} mois`);
+        }
+        
+        function addDays(timeString, daysToAdd) {
+            const parts = timeString.match(/(\d+) jours/);
+            let days = parseInt(parts[1]) + daysToAdd;
+            
+            return timeString.replace(/(\d+) jours/, `${days} jours`);
+        }
+        
+        // Démarrer le parcours
+        function startJourney() {
+            const progress = loadProgress();
+            
+            if (progress) {
+                // Reprendre là où on s'était arrêté
+                currentStep = progress.currentStep || 0;
+                currentQuizQuestion = progress.currentQuizQuestion || 0;
+                
+                document.getElementById('welcome-screen').classList.add('hidden');
+                
+                switch(progress.screen) {
+                    case 'timeline':
+                        document.getElementById('timeline-screen').classList.remove('hidden');
+                        showStep(currentStep);
+                        break;
+                    case 'quiz':
+                        document.getElementById('quiz-screen').classList.remove('hidden');
+                        showQuizQuestion(currentQuizQuestion);
+                        break;
+                    case 'timer':
+                        document.getElementById('timer-screen').classList.remove('hidden');
+                        startCountdown();
+                        break;
+                    case 'final-question':
+                        document.getElementById('final-question').classList.remove('hidden');
+                        initNoButton();
+                        break;
+                    case 'final-screen':
+                        document.getElementById('final-screen').classList.remove('hidden');
+                        checkDateAndShowMenu();
+                        break;
+                    default:
+                        document.getElementById('timeline-screen').classList.remove('hidden');
+                        showStep(0);
+                }
+            } else {
+                // Première visite
+                document.getElementById('welcome-screen').classList.add('hidden');
+                document.getElementById('timeline-screen').classList.remove('hidden');
+                showStep(0);
+            }
+        }
+        
+        // Afficher une étape
+        function showStep(index) {
+            currentStep = index;
+            const step = timelineSteps[index];
+            const content = document.getElementById('step-content');
+            
+            content.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">
+                        ${step.title}
+                    </h2>
+                    <div class="relative inline-block mb-8">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-100 via-red-50 to-purple-100 rounded-3xl opacity-30 blur-xl"></div>
+                        <img src="${step.image}" 
+                             alt="Étape ${index + 1}" 
+                             class="timeline-image relative z-10 w-full max-w-2xl mx-auto" 
+                             style="max-height: 500px; object-fit: contain;"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%23f0f0f0%22 opacity=%220.3%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EImage ${index + 1}%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <p class="text-lg md:text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto px-4">
+                        ${step.description}
+                    </p>
+                </div>
+            `;
+            
+            // Mettre à jour les boutons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('step-counter').textContent = `Étape ${index + 1} / ${timelineSteps.length}`;
+            
+            if (index === timelineSteps.length - 1) {
+                document.getElementById('next-btn').textContent = "Passer au quiz ❤️";
+            } else {
+                document.getElementById('next-btn').textContent = "Suivant →";
+            }
+            
+            // Sauvegarder la progression
+            saveProgress('timeline');
+        }
+        
+        function previousStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1);
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep < timelineSteps.length - 1) {
+                showStep(currentStep + 1);
+            } else {
+                // Passer au quiz
+                document.getElementById('timeline-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                currentQuizQuestion = 0;
+                saveProgress('quiz');
+                showQuizQuestion(0);
+            }
+        }
+        
+        // Afficher une question du quiz
+        let quizUpdateInterval = null;
+        
+        function showQuizQuestion(index) {
+            currentQuizQuestion = index;
+            const question = quizQuestions[index];
+            const content = document.getElementById('quiz-content');
+            
+            // Nettoyer l'interval précédent si existant
+            if (quizUpdateInterval) {
+                clearInterval(quizUpdateInterval);
+                quizUpdateInterval = null;
+            }
+            
+            let answers = question.answers;
+            if (question.getAnswers) {
+                answers = question.getAnswers();
+            }
+            
+            const answersHTML = answers.map((answer, i) => `
+                <button onclick="handleQuizAnswer(${i})" class="quiz-answer w-full bg-gradient-to-r from-pink-100 to-red-100 hover:from-pink-200 hover:to-red-200 text-gray-800 text-lg font-semibold p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 text-left">
+                    ${String.fromCharCode(65 + i)}) <span class="answer-text-${i}">${answer.text}</span>
+                </button>
+            `).join('');
+            
+            content.innerHTML = `
+                <div class="mb-8">
+                    <p class="text-sm text-gray-500 mb-4">Question ${index + 1} / ${quizQuestions.length}</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-8">
+                        ${question.question}
+                    </h3>
+                    <div class="space-y-4">
+                        ${answersHTML}
+                    </div>
+                </div>
+                <div id="quiz-feedback" class="hidden mt-8 p-6 rounded-2xl">
+                    <!-- Feedback sera affiché ici -->
+                </div>
+            `;
+            
+            // Si c'est la question du temps ensemble, mettre à jour en temps réel
+            if (question.getAnswers) {
+                quizUpdateInterval = setInterval(() => {
+                    const updatedAnswers = question.getAnswers();
+                    updatedAnswers.forEach((answer, i) => {
+                        const textElement = document.querySelector(`.answer-text-${i}`);
+                        if (textElement) {
+                            textElement.textContent = answer.text;
+                        }
+                    });
+                }, 100); // Mise à jour toutes les 100ms
+            }
+        }
+        
+        function handleQuizAnswer(answerIndex) {
+            // Vérifier que l'élément feedback existe
+            const feedback = document.getElementById('quiz-feedback');
+            if (!feedback) {
+                console.error('Feedback element not found');
+                return;
+            }
+            
+            const question = quizQuestions[currentQuizQuestion];
+            let answers = question.answers;
+            if (question.getAnswers) {
+                answers = question.getAnswers();
+            }
+            
+            // Vérifier que la réponse existe
+            if (!answers[answerIndex]) {
+                console.error('Answer not found at index', answerIndex);
+                return;
+            }
+            
+            const selectedAnswer = answers[answerIndex];
+            
+            // Vérifier si c'est une bonne réponse
+            if (selectedAnswer.correct === true) {
+                // Bonne réponse !
+                // Arrêter la mise à jour en temps réel
+                if (quizUpdateInterval) {
+                    clearInterval(quizUpdateInterval);
+                    quizUpdateInterval = null;
+                }
+                
+                let message = '';
+                if (selectedAnswer.message) {
+                    message = selectedAnswer.message;
+                } else if (question.correctMessage) {
+                    message = typeof question.correctMessage === 'function' ? question.correctMessage() : question.correctMessage;
+                }
+                
+                feedback.className = 'mt-8 p-6 rounded-2xl bg-green-100 border-2 border-green-300';
+                feedback.innerHTML = `
+                    <p class="text-lg text-gray-800 mb-4">${message}</p>
+                    <button onclick="nextQuizQuestion()" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        ${currentQuizQuestion < quizQuestions.length - 1 ? 'Question suivante →' : 'Continuer 💕'}
+                    </button>
+                `;
+                feedback.classList.remove('hidden');
+                
+                // Désactiver les boutons de réponse
+                const answerButtons = document.querySelectorAll('.quiz-answer');
+                answerButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                });
+            } else {
+                // Mauvaise réponse
+                feedback.className = 'mt-8 p-6 rounded-2xl bg-red-100 border-2 border-red-300';
+                feedback.innerHTML = `
+                    <p class="text-lg text-gray-800 mb-4">Hmm, essaie encore... 💭</p>
+                `;
+                feedback.classList.remove('hidden');
+                
+                // Cache le feedback après 2 secondes pour permettre de réessayer
+                setTimeout(() => {
+                    feedback.classList.add('hidden');
+                }, 2000);
+            }
+        }
+        
+        function nextQuizQuestion() {
+            if (currentQuizQuestion < quizQuestions.length - 1) {
+                currentQuizQuestion++;
+                saveProgress('quiz');
+                showQuizQuestion(currentQuizQuestion);
+            } else {
+                // Passer au timer
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('timer-screen').classList.remove('hidden');
+                saveProgress('timer');
+                startCountdown();
+            }
+        }
+        
+        // Timer de 5 à 0
+        function startCountdown() {
+            let count = 5;
+            const countdownEl = document.getElementById('countdown');
+            
+            const interval = setInterval(() => {
+                count--;
+                countdownEl.textContent = count;
+                
+                if (count === 0) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('timer-screen').classList.add('hidden');
+                        document.getElementById('final-question').classList.remove('hidden');
+                        saveProgress('final-question');
+                        initNoButton();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+        
+        // Initialiser le bouton Non qui s'échappe
+        function initNoButton() {
+            const noBtn = document.getElementById('no-btn');
+            const container = document.getElementById('final-question');
+            
+            function moveButton() {
+                const containerRect = container.getBoundingClientRect();
+                const btnRect = noBtn.getBoundingClientRect();
+                
+                const maxX = containerRect.width - btnRect.width - 40;
+                const maxY = containerRect.height - btnRect.height - 40;
+                
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+                
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+            }
+            
+            // Sur hover (souris)
+            noBtn.addEventListener('mouseenter', moveButton);
+            
+            // Sur touch (mobile) - on déplace avant le clic
+            noBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                moveButton();
+            });
+        }
+        
+        // Quand elle clique sur Oui
+        function handleYes() {
+            // Confettis !
+            const duration = 5 * 1000;
+            const end = Date.now() + duration;
+            
+            (function frame() {
+                confetti({
+                    particleCount: 7,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff6b9d', '#c06c84', '#f67280', '#355c7d']
+                });
+                confetti({
+                    particleCount: 7,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff6b9d', '#c06c84', '#f67280', '#355c7d']
+                });
+                
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+            
+            // Attendre un peu puis afficher l'écran final
+            setTimeout(() => {
+                document.getElementById('final-question').classList.add('hidden');
+                document.getElementById('final-screen').classList.remove('hidden');
+                saveProgress('final-screen');
+                checkDateAndShowMenu();
+                
+                // Optionnel : nettoyer la progression après avoir tout complété
+                // clearProgress();
+            }, 3000);
+        }
+        
+        // Vérifier la date et afficher le menu
+        function checkDateAndShowMenu() {
+            const now = new Date();
+            const targetDate = new Date(2026, 1, 14, 10, 0, 0); // 14 février 2026 à 10h00
+            
+            const messageEl = document.getElementById('final-message');
+            const menuContainer = document.getElementById('menu-container');
+            
+            if (now >= targetDate) {
+                messageEl.innerHTML = `
+                    <span class="inline-block animate-pulse">Et voici une surprise pour toi... 🎁</span>
+                `;
+                menuContainer.innerHTML = `
+                    <div class="bg-white rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
+                        <img src="menu.png" 
+                             alt="Menu surprise" 
+                             class="w-full h-auto rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition-opacity duration-300"
+                             style="max-height: 80vh; object-fit: contain;"
+                             onclick="openLightbox('menu.png')"
+                             onerror="this.parentElement.innerHTML='<div class=\\'text-center py-12\\'><p class=\\'text-xl text-gray-600\\'>Le menu surprise sera disponible bientôt ! 💕</p></div>'">
+                        <p class="text-center text-sm text-gray-500 mt-4">Clique sur l'image pour l'agrandir</p>
+                    </div>
+                `;
+            } else {
+                const timeDiff = targetDate - now;
+                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                messageEl.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-xl sm:text-2xl">Merci d'avoir dit OUI ! 💕</p>
+                        <p class="text-base sm:text-lg text-gray-600">Une surprise t'attend le 14 février 2026 à 10h...</p>
+                        <div class="inline-block bg-white px-6 py-3 rounded-full shadow-lg">
+                            <span class="text-lg sm:text-xl font-semibold gradient-text">Plus que ${days} jours et ${hours} heures !</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Fonction pour ouvrir la lightbox
+        function openLightbox(imageSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Empêcher le scroll
+        }
+        
+        // Fonction pour fermer la lightbox
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Réactiver le scroll
+        }
+    </script>
+</body>
+</html>
