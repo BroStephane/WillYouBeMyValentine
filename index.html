@@ -318,6 +318,12 @@
                 emoji: "🍝"
             },
             {
+                title: "La première fois que nos lèvres se sont superposées",
+                description: "Ce premier baiser, ce moment magique où le temps s'est arrêté. Nos lèvres se sont trouvées comme si elles s'étaient toujours cherchées. Un instant gravé à jamais dans mon cœur.",
+                image: "image3bis.png",
+                emoji: "💋"
+            },
+            {
                 title: "720km pour te rejoindre",
                 description: "L'évidence. Après seulement une semaine, 720 kilomètres n'étaient rien pour te rejoindre en Ardèche. Mon cœur savait déjà que tu étais celle qu'il cherchait.",
                 image: "image4.png",
@@ -399,7 +405,7 @@
                 answers: [
                     { text: "Stéphane", correct: true, message: "Et mes surnoms, ils sont passés où ? 😢" },
                     { text: "Doudou", correct: true, message: "Je suis donc un Doudou tout doux et tout mou drôle ? 😊" },
-                    { text: "Petit poux", correct: true, message: "C'est vraiment le pire surnom que tu aies pu me trouver... 😢" },
+                    { text: "Petit poux", correct: true, message: "Je sais pas si c'est le meilleur surnom ridicule ou si c'est le pire surnom jamais inventé .. 😢" },
                     { text: "Ton futur époux", correct: true, message: "Je suis heureux de savoir que tu nous vois aussi loin, toi et moi 😘" }
                 ]
             },
@@ -808,7 +814,8 @@
         // Vérifier la date et afficher le menu
         function checkDateAndShowMenu() {
             const now = new Date();
-            const targetDate = new Date(2026, 1, 14, 10, 0, 0); // 14 février 2026 à 10h00
+            const targetDate = new Date(2026, 1, 14, 10, 0, 0); // 14 février 2026 à 10h
+            // Année 2026, mois 1 (février, car les mois commencent à 0), jour 14, heure 10, minute 0, seconde 0
             
             const messageEl = document.getElementById('final-message');
             const menuContainer = document.getElementById('menu-container');
@@ -817,17 +824,65 @@
                 messageEl.innerHTML = `
                     <span class="inline-block animate-pulse">Et voici une surprise pour toi... 🎁</span>
                 `;
-                menuContainer.innerHTML = `
-                    <div class="bg-white rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
-                        <img src="menu.png" 
-                             alt="Menu surprise" 
-                             class="w-full h-auto rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition-opacity duration-300"
-                             style="max-height: 80vh; object-fit: contain;"
-                             onclick="openLightbox('menu.png')"
-                             onerror="this.parentElement.innerHTML='<div class=\\'text-center py-12\\'><p class=\\'text-xl text-gray-600\\'>Le menu surprise sera disponible bientôt ! 💕</p></div>'">
-                        <p class="text-center text-sm text-gray-500 mt-4">Clique sur l'image pour l'agrandir</p>
+                
+                // Message d'amour romantique
+                const loveMessage = `
+                    <div class="bg-gradient-to-br from-pink-50 to-red-50 rounded-3xl shadow-xl p-6 sm:p-8 md:p-10 max-w-3xl mx-auto mb-8 border border-pink-200">
+                        <div class="text-center mb-6">
+                            <div class="inline-block bg-gradient-to-r from-pink-400 to-red-400 text-white px-6 py-2 rounded-full text-sm font-semibold mb-4">
+                                Un message de mon cœur au tien 💕
+                            </div>
+                        </div>
+                        
+                        <div class="prose prose-lg max-w-none">
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4 text-center italic">
+                                Ma Princesse,
+                            </p>
+                            
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4 text-justify">
+                                <span class="text-2xl float-left mr-2 text-pink-500">“</span>
+                                Chaque jour à tes côtés est un cadeau précieux. Tu illumines ma vie de ta présence, 
+                                de ton sourire, de ta tendresse. Ces 4 ans et demi ont été les plus belles années de mon existence, 
+                                et je sais que ce n'est que le début de notre histoire.
+                            </p>
+                            
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4 text-justify">
+                                Tu es ma complice, ma confidente, mon âme sœur. Avec toi, chaque moment devient magique, 
+                                chaque jour est une nouvelle aventure. Tu as transformé ma vie en un rêve éveillé dont je ne veux jamais me réveiller.
+                            </p>
+                            
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4 text-justify">
+                                Je veux passer chaque Saint-Valentin avec toi, célébrer chaque victoire, 
+                                surmonter chaque épreuve main dans la main. Tu es mon aujourd'hui et tous mes demains.
+                            </p>
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-4 text-justify">
+                                Merci d'être à mes cotés, de m'aimer, de me faire rire, de me soutenir dans les moments difficiles. Je suis tellement chanceux de t'avoir dans ma vie.
+                                <span class="text-2xl text-pink-500">”</span>
+                            </p>
+                            
+                            <p class="text-gray-700 text-base sm:text-lg leading-relaxed text-center font-semibold mt-6">
+                                Je t'aime plus qu'hier, moins que demain, Mais toujours plus fort que fort. 💖
+                           </p>
+                            
+                            <p class="text-gray-600 text-sm sm:text-base text-center mt-4 italic">
+                                Ton chéri, pour toujours
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-center gap-2 mt-6 text-2xl opacity-60">
+                            💖 💕 💗 💓 💞
+                        </div>
+                        
+                        <!-- Bouton pour voir le menu -->
+                        <div class="text-center mt-8">
+                            <button onclick="showMenu()" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-10 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300">
+                                Découvrir la surprise du restaurant 🍽️✨
+                            </button>
+                        </div>
                     </div>
                 `;
+                
+                menuContainer.innerHTML = loveMessage;
             } else {
                 const timeDiff = targetDate - now;
                 const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
@@ -859,6 +914,49 @@
             const lightbox = document.getElementById('lightbox');
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto'; // Réactiver le scroll
+        }
+        
+        // Fonction pour afficher le menu et masquer le message
+        function showMenu() {
+            const menuContainer = document.getElementById('menu-container');
+            
+            if (menuContainer) {
+                // Faire disparaître le message d'amour avec animation
+                menuContainer.style.transition = 'opacity 0.5s ease';
+                menuContainer.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Créer le nouveau contenu du menu
+                    const menuHTML = `
+                        <div class="bg-white rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-3xl mx-auto" style="opacity: 0; transition: opacity 0.5s ease;">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
+                                Ton menu surprise 🍽️✨
+                            </h3>
+                            <img src="menu.png" 
+                                 alt="Menu surprise" 
+                                 class="w-full h-auto rounded-2xl  cursor-pointer hover:opacity-90 transition-opacity duration-300"
+                                 style="max-height: 70vh; object-fit: contain;"
+                                 onclick="openLightbox('menu.png')"
+                                 onerror="this.parentElement.innerHTML='<div class=\\'text-center py-12\\'><p class=\\'text-xl text-gray-600\\'>Le menu surprise sera disponible bientôt ! 💕</p></div>'">
+                            <p class="text-center text-sm text-gray-500 mt-4">🔍 Clique sur l'image pour l'agrandir</p>
+                        </div>
+                    `;
+                    
+                    // Remplacer le contenu
+                    menuContainer.innerHTML = menuHTML;
+                    
+                    // Réinitialiser l'opacité du conteneur parent
+                    menuContainer.style.opacity = '1';
+                    
+                    // Animation d'apparition du menu
+                    setTimeout(() => {
+                        const menuDiv = menuContainer.querySelector('div');
+                        if (menuDiv) {
+                            menuDiv.style.opacity = '1';
+                        }
+                    }, 50);
+                }, 500);
+            }
         }
     </script>
 </body>
